@@ -18,6 +18,11 @@ spec:
         image: ngdtrunguit/eshoponweb-webapp:1.0.4
         ports:
         - containerPort: 80
+        env:  # Add your environment variables here
+        - name: UseOnlyInMemoryDatabase
+          value: "true"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
         resources:
           requests:
             memory: "1Gi"
