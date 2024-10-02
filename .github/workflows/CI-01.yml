@@ -57,3 +57,29 @@ jobs:
               "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/ci-01"
             }
           }
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # SonarQube Scanner
+    - name: SonarQube Scan
+      run: |
+        sonar-scanner \
+        -Dsonar.projectKey=CI-01 \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=${{ secrets.SONARQUBE_HOST_URL }} \
+        -Dsonar.login=${{ secrets.SONARQUBE_LOGIN_TOKEN }}
+      env:
+        SONAR_TOKEN: ${{ secrets.SONARQUBE_LOGIN_TOKEN }}
+
+    # (Optional) Fail the job if the quality gate fails
+    - name: Quality Gate Status
+      run: |
+        STATUS=$(curl -s "${{ secrets.SONARQUBE_HOST_URL }}/api/qualitygates/project_status?projectKey=CI-01" \
+        -u ${{ secrets.SONARQUBE_LOGIN_TOKEN }}: | jq -r .projectStatus.status)
+        if [ "$STATUS" != "OK" ]; then
+          echo "Quality Gate failed with status: $STATUS"
+          exit 1
+        fi
