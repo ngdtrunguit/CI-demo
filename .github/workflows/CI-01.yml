@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: CI-01
+  IMAGE_NAME: ci-01
   IMAGE_TAG: 1.0.${{ github.run_number }}  # GitHub run number for the image tag
   registry: docker.io  # Docker Hub registry URL
   username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
@@ -22,7 +22,6 @@ jobs:
     defaults:
       run:
         working-directory: CI-01
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
