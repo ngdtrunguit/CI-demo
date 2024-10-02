@@ -12,6 +12,9 @@ env:
 jobs:
   buildandpush:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: CI-02-webshop
     steps:
     # Checkout the repository
     - uses: actions/checkout@v4
@@ -25,10 +28,10 @@ jobs:
 
     # Build and test the .NET project
     - name: Build with dotnet
-      run: dotnet build CI-02-webshop/eShopOnWeb.sln --configuration Release
+      run: dotnet build ./eShopOnWeb.sln --configuration Release
 
     - name: Test with dotnet
-      run: dotnet test CI-02-webshop/eShopOnWeb.sln --configuration Release
+      run: dotnet test ./eShopOnWeb.sln --configuration Release
 
     # Log into Docker Hub
     - name: Log into Docker Hub
@@ -40,5 +43,5 @@ jobs:
     # Build and push Docker image
     - name: Build and Push Docker image
       run: |
-        docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f CI-02-webshop/src/Web/Dockerfile .
+        docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f ./src/Web/Dockerfile .
         docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
