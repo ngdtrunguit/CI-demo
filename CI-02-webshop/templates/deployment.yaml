@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshoponweb
+  namespace: ci-02-webshop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eshoponweb
+  template:
+    metadata:
+      labels:
+        app: eshoponweb
+    spec:
+      containers:
+      - name: eshoponweb
+        image: DOCKERHUB_USERNAME/eshoponweb-webapp:1.0.4
+        ports:
+        - containerPort: 80
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshoponweb-service
+  namespace: ci-02-webshop
+spec:
+  selector:
+    app: eshoponweb
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
