@@ -66,7 +66,8 @@ jobs:
     # SonarQube Scanner
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v3.0.0
-      projectBaseDir: CI-01  # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
+      with
+        projectBaseDir: CI-01  # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
