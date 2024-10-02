@@ -17,12 +17,14 @@ spec:
       - name: eshoponweb
         image: ngdtrunguit/eshoponweb-webapp:1.0.4
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:  # Add your environment variables here
         - name: UseOnlyInMemoryDatabase
           value: "true"
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
+        - name: ASPNETCORE_HTTP_PORTS
+          value: "80"
         resources:
           requests:
             memory: "1Gi"
@@ -43,5 +45,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
   type: LoadBalancer
