@@ -1,0 +1,60 @@
+name: Docker build CI-01 to Docker Hub
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "CI-01/**"
+      - "!**/README.md"
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: test-ci
+  IMAGE_TAG: 1.0.${{ github.run_number }}  # GitHub run number for the image tag
+  registry: docker.io  # Docker Hub registry URL
+  username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
+  password: ${{ secrets.DOCKERHUB_PASSWORD }}  # Docker Hub password from secrets
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: test-ci
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Log into Docker Hub
+    - name: Log into Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # Build and Push Docker Image to Docker Hub
+    - name: Build and Push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+    # Update Image Tag to values.yaml
+    - name: Update Image Version in the related HelmChart values.yaml
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: 'test-ci/values.yaml'
+        branch: main
+        targetBranch: main
+        masterBranchName: main
+        commitChange: true
+        token: ${{ secrets.GH_TOKEN }}
+        message: 'Update CI Images' 
+        changes: |
+          {
+            "test-ci/values.yaml": {
+              "image.tag": "${{ env.IMAGE_TAG }}",
+              "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/test-ci"
+            }
+          }
