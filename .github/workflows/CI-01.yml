@@ -64,18 +64,3 @@ jobs:
               "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/ci-01"
             }
           }
-  sonar:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # SonarQube Scanner
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v3.0.0
-      with:
-        projectBaseDir: CI-01  # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        SONAR_PROJECT_KEY: "CI-01"
