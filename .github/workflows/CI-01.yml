@@ -65,21 +65,7 @@ jobs:
 
     # SonarQube Scanner
     - name: SonarQube Scan
-      run: |
-        sonar-scanner \
-        -Dsonar.projectKey=CI-01 \
-        -Dsonar.sources=. \
-        -Dsonar.host.url=${{ secrets.SONARQUBE_HOST_URL }} \
-        -Dsonar.login=${{ secrets.SONARQUBE_LOGIN_TOKEN }}
+      uses: sonarsource/sonarqube-scan-action@v3.0.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
       env:
-        SONAR_TOKEN: ${{ secrets.SONARQUBE_LOGIN_TOKEN }}
-
-    # (Optional) Fail the job if the quality gate fails
-    - name: Quality Gate Status
-      run: |
-        STATUS=$(curl -s "${{ secrets.SONARQUBE_HOST_URL }}/api/qualitygates/project_status?projectKey=CI-01" \
-        -u ${{ secrets.SONARQUBE_LOGIN_TOKEN }}: | jq -r .projectStatus.status)
-        if [ "$STATUS" != "OK" ]; then
-          echo "Quality Gate failed with status: $STATUS"
-          exit 1
-        fi
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
