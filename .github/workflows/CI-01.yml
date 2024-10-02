@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: test-ci
+  IMAGE_NAME: CI-01
   IMAGE_TAG: 1.0.${{ github.run_number }}  # GitHub run number for the image tag
   registry: docker.io  # Docker Hub registry URL
   username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: test-ci
+        working-directory: CI-01
 
     steps:
     - name: Checkout repository
@@ -44,7 +44,7 @@ jobs:
     - name: Update Image Version in the related HelmChart values.yaml
       uses: fjogeleit/yaml-update-action@main
       with:
-        valueFile: 'test-ci/values.yaml'
+        valueFile: 'CI-01/values.yaml'
         branch: main
         targetBranch: main
         masterBranchName: main
@@ -53,7 +53,7 @@ jobs:
         message: 'Update CI Images' 
         changes: |
           {
-            "test-ci/values.yaml": {
+            "CI-01/values.yaml": {
               "image.tag": "${{ env.IMAGE_TAG }}",
               "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/test-ci"
             }
