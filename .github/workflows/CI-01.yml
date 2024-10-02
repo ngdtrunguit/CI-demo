@@ -54,6 +54,6 @@ jobs:
           {
             "CI-01/values.yaml": {
               "image.tag": "${{ env.IMAGE_TAG }}",
-              "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/test-ci"
+              "image.repository": "${{ secrets.DOCKERHUB_USERNAME }}/ci-01"
             }
           }
