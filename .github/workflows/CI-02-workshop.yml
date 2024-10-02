@@ -1,0 +1,44 @@
+name: eShopOnWeb Build and Push to Docker Hub
+
+on:
+  workflow_dispatch
+
+env:
+  IMAGE_NAME: eshoponweb-webapp
+  IMAGE_TAG: 1.0.${{ github.run_number }}  # GitHub run number for the image tag
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub username from secrets
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}  # Docker Hub password from secrets
+
+jobs:
+  buildandpush:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the repository
+    - uses: actions/checkout@v4
+    
+    # Setup .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        dotnet-quality: 'preview'
+
+    # Build and test the .NET project
+    - name: Build with dotnet
+      run: dotnet build ./eShopOnWeb.sln --configuration Release
+
+    - name: Test with dotnet
+      run: dotnet test ./eShopOnWeb.sln --configuration Release
+
+    # Log into Docker Hub
+    - name: Log into Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # Build and push Docker image
+    - name: Build and Push Docker image
+      run: |
+        docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f ./src/Web/Dockerfile .
+        docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

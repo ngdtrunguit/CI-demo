@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshoponweb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eshoponweb
+  template:
+    metadata:
+      labels:
+        app: eshoponweb
+    spec:
+      containers:
+      - name: eshoponweb
+        image: DOCKERHUB_USERNAME/eshoponweb-webapp:1.0.1>
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshoponweb-service
+spec:
+  selector:
+    app: eshoponweb
+  ports:
+    - protocol: TCP
+      port: 80  # External port
+      targetPort: 80  # The port on the container
+  type: LoadBalancer  # Exposes the service externally
