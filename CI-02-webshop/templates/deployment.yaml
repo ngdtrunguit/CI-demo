@@ -18,6 +18,13 @@ spec:
         image: ngdtrunguit/eshoponweb-webapp:1.0.4
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
         
 ---
 apiVersion: v1
