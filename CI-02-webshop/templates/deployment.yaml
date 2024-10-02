@@ -17,7 +17,7 @@ spec:
       - name: eshoponweb
         image: ngdtrunguit/eshoponweb-webapp:1.0.4
         ports:
-        - containerPort: 5106
+        - containerPort: 80
         env:  # Add your environment variables here
         - name: UseOnlyInMemoryDatabase
           value: "true"
@@ -45,5 +45,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 5106
+      targetPort: 80
   type: LoadBalancer

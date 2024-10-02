@@ -25,3 +25,4 @@ COPY --from=build /app/src/Web/out ./
 # ENV ASPNETCORE_ENVIRONMENT Development
 
 ENTRYPOINT ["dotnet", "Web.dll"]
+EXPOSE 80
